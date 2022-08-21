@@ -1,0 +1,17 @@
+{
+    "categories": [
+        {
+            "id": "1",
+            "name": "Mercado",
+            "ceil": 100
+        },
+        {
+            "id": "2",
+            "name": "Lanches",
+            "ceil": 200
+        }
+    ],
+    "profile": {
+        "name": "typicode"
+    }
+}
