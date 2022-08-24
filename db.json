@@ -9,6 +9,11 @@
             "id": "2",
             "name": "Lanches",
             "ceil": 200
+        },
+        {
+            "id": "3",
+            "name": "Combustível",
+            "ceil": 400
         }
     ],
     "profile": {
