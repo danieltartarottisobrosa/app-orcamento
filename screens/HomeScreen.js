@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 
 import { Header, ListItem, Icon, SearchBar, Text } from '@rneui/themed'
 import { View, StyleSheet, ScrollView } from 'react-native'
@@ -19,7 +19,10 @@ import {
 import {
   allCategoriesById,
   countSelectedCategories,
-  unselectAll as unselectAllCategories
+  unselectAll as unselectAllCategories,
+  load as loadCategories,
+  isWithoutCategory,
+  allCategories
 } from '../redux/ducks/categories'
 
 import { 
@@ -36,7 +39,8 @@ import {
   formatDate,
   formatMoney
 } from '../utils/formatters'
-import { BadgedIcon, SelectCategoryDialog } from '../components'
+
+import { BadgedIcon, SingleItemSelecionDialog } from '../components'
 
 export const HomeScreen = props => {
   const dispatch = useDispatch()
@@ -46,13 +50,21 @@ export const HomeScreen = props => {
   const filterTerm = useSelector(getFilterTerm)
   const categoriesById = useSelector(allCategoriesById)
   
+  const categories = useSelector(allCategories)
+  
   const selectedEntriesCount = useSelector(countSelectedEntries)
   const selectedCategoriesCount = useSelector(countSelectedCategories)
   const selectedMonthsCount = useSelector(countSelectedMonths)
   const selectedTypesCount = useSelector(countSelectedTypes)
+  const withoutCategory = useSelector(isWithoutCategory)
 
-  const filterCount = selectedCategoriesCount + selectedMonthsCount + selectedTypesCount
+  const filterCount = selectedCategoriesCount + selectedMonthsCount + 
+      selectedTypesCount + (withoutCategory ? 1 : 0)
   
+  useEffect(() => {
+    dispatch(loadCategories())
+  }, [])
+
   const getCategoryName = categoryId => {
     const found = categoriesById[categoryId]
     return found ? found.name : 'Sem Categoria'
@@ -142,14 +154,15 @@ export const HomeScreen = props => {
             <ListItem.Content>
               <ListItem.Subtitle style={styles.category}>{getCategoryName(entry.category)}</ListItem.Subtitle>
               <ListItem.Subtitle style={styles.date}>{formatDate(entry.date)}</ListItem.Subtitle>
-              <ListItem.Title>{entry.name}</ListItem.Title>
+              <ListItem.Title style={styles.title}>{entry.name}</ListItem.Title>
               <ListItem.Subtitle style={styles.value}>{formatMoney(entry.value)}</ListItem.Subtitle>
             </ListItem.Content>
           </ListItem>
         ))}
       </ScrollView>
 
-      <SelectCategoryDialog
+      <SingleItemSelecionDialog
+        items={categories}
         isVisible={showCategorySelector}
         onSelect={handleCategoryChange}
         onBackdropPress={useCallback(() => setShowCategorySelector(false))} />
@@ -187,6 +200,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 8,
     bottom: -5,
-    fontSize: 18
+    fontSize: 16
+  },
+  title: {
+    position: 'relative',
+    top: 3,
+    fontSize: 16
   }
 })

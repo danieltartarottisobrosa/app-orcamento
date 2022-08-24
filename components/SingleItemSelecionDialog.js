@@ -1,38 +1,36 @@
 import React, { useCallback, useState } from 'react'
 
 import { ListItem, Dialog } from '@rneui/themed'
-import { StyleSheet } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
+import { StyleSheet, ScrollView } from 'react-native'
 
-import {
-    allCategories
-} from '../redux/ducks/categories'
-import { ScrollView } from 'react-native-gesture-handler'
-
-export const SelectCategoryDialog = ({ onSelect, ...props } = {}) => {
-    const categories = useSelector(allCategories)
-
+export const SingleItemSelecionDialog = ({
+    items = [],
+    labelProp = 'name',
+    idProp = 'id',
+    onSelect, 
+    ...props
+} = {}) => {
     return (
         <Dialog {...props}>
             <ScrollView>
                 <ListItem
                     key='without-category'
                     bottomDivider
-                    onPress={useCallback(() => onSelect(null))}
+                    onPress={() => onSelect(null)}
                 >
                     <ListItem.Content>
                         <ListItem.Title>Sem Categoria</ListItem.Title>
                     </ListItem.Content>
                 </ListItem>
 
-                {categories.map(category => (
+                {items.map(item => (
                     <ListItem
-                        key={category.id}
+                        key={item[idProp]}
                         bottomDivider
-                        onPress={useCallback(() => onSelect(category.id))}
+                        onPress={() => onSelect(item[idProp])}
                     >
                         <ListItem.Content>
-                            <ListItem.Title>{category.name}</ListItem.Title>
+                            <ListItem.Title>{item[labelProp]}</ListItem.Title>
                         </ListItem.Content>
                     </ListItem>
                 ))}

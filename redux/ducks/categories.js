@@ -1,3 +1,4 @@
+import axios from 'axios'
 
 // Action Types
 
@@ -20,9 +21,11 @@ export const Types = {
 const initialState = {
     withoutCategory: false,
     all: [
-        { id: '1', name: 'Mercado', ceil: 100, selected: false },
-        { id: '2', name: 'Lanches', ceil: 200, selected: false }
-    ]
+        // { id: '1', name: 'Mercado', ceil: 100, selected: false },
+        // { id: '2', name: 'Lanches', ceil: 200, selected: false }
+    ],
+    loading: false,
+    error: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -100,6 +103,29 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 withoutCategory: false
+            }
+
+        case Types.LOAD_STARTED:
+            return {
+                ...state,
+                loading: true,
+                error: false
+            }
+
+        case Types.LOAD_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                all: [ ...action.payload ]
+            }
+
+        case Types.LOAD_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: true,
+                all: []
             }
 
         default:
@@ -193,8 +219,21 @@ export function isWithoutCategory({ categories: state }) {
 
 export function load() {
     return dispatch => {
-        dispatch({
-            type: Types.LOAD_STARTED
-        })
+        dispatch({ type: Types.LOAD_STARTED })
+
+        axios
+            .get('https://my-json-server.typicode.com/danieltartarottisobrosa/app-orcamento/categories')
+            .then(res => {
+                dispatch({
+                    type: Types.LOAD_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: Types.LOAD_FAILURE,
+                    payload: JSON.stringify(err)
+                })
+            })
     }
 }

@@ -5,7 +5,7 @@ import { CategoriesAccordeonListItem } from './CategoriesAccordeonListItem'
 import { TypesAccordeonListItem } from './TypesAccordeonListItem'
 import { MonthsAccordeonListItem } from './MonthsAccordeonListItem'
 import { BadgedIcon } from './BadgedIcon'
-import { SelectCategoryDialog } from './SelectCategoryDialog'
+import { SingleItemSelecionDialog } from './SingleItemSelecionDialog'
 
 export {
   View,
@@ -15,5 +15,5 @@ export {
   MonthsAccordeonListItem,
   TypesAccordeonListItem,
   BadgedIcon,
-  SelectCategoryDialog
+  SingleItemSelecionDialog
 }
